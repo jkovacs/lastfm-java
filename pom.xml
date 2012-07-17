@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<groupId>de.u-mass</groupId>
+	<artifactId>lastfm-java</artifactId>
+	<version>0.1.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>Last.fm bindings</name>
+	<description>Java bindings for the Last.fm webservice API</description>
+	<url>http://code.google.com/p/lastfm-java/</url>
+
+	<licenses>
+		<license>
+			<name>The BSD 2-Clause License</name>
+			<url>http://opensource.org/licenses/bsd-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:https://code.google.com/p/lastfm-java</connection>
+		<developerConnection>scm:git:https://code.google.com/p/lastfm-java</developerConnection>
+		<url>http://code.google.com/p/lastfm-java/</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>Janni Kovacs</name>
+			<email>jannikovacs@gmail.com</email>
+		</developer>
+	</developers>
+</project>
