@@ -11,7 +11,7 @@
 
 	<groupId>de.u-mass</groupId>
 	<artifactId>lastfm-java</artifactId>
-	<version>0.1.2</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Last.fm bindings</name>
 	<description>Java bindings for the Last.fm webservice API</description>
