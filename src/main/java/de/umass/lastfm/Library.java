@@ -70,7 +70,7 @@ public class Library {
 	 *
 	 * @param user The user whose library you want to fetch.
 	 * @param page The page number you wish to scan to.
-	 * @param limit Limit the amount of artists returned (maximum/default is 50).
+	 * @param limit Limit the number of artists returned (maximum/default is 50).
 	 * @param apiKey A Last.fm API key.
 	 * @return a {@link PaginatedResult} of the artists
 	 */
@@ -78,7 +78,8 @@ public class Library {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("user", user);
 		params.put("page", String.valueOf(page));
-		params.put("limit", String.valueOf(limit));
+		if (limit > 0)
+			params.put("limit", String.valueOf(limit));
 		Result result = Caller.getInstance().call("library.getArtists", apiKey, params);
 		return ResponseBuilder.buildPaginatedResult(result, Artist.class);
 	}
@@ -137,7 +138,7 @@ public class Library {
 	 *
 	 * @param user The user whose library you want to fetch.
 	 * @param page The page number you wish to scan to.
-	 * @param limit Limit the amount of albumss returned (maximum/default is 50).
+	 * @param limit Limit the number of albums returned (maximum/default is 50).
 	 * @param apiKey A Last.fm API key.
 	 * @return a {@link PaginatedResult} of the albums
 	 */
@@ -145,7 +146,8 @@ public class Library {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("user", user);
 		params.put("page", String.valueOf(page));
-		params.put("limit", String.valueOf(limit));
+		if (limit > 0)
+			params.put("limit", String.valueOf(limit));
 		Result result = Caller.getInstance().call("library.getAlbums", apiKey, params);
 		return ResponseBuilder.buildPaginatedResult(result, Album.class);
 	}
@@ -204,7 +206,7 @@ public class Library {
 	 *
 	 * @param user The user whose library you want to fetch.
 	 * @param page The page number you wish to scan to.
-	 * @param limit Limit the amount of albumss returned (maximum/default is 50).
+	 * @param limit Limit the number of albums returned (maximum/default is 50).
 	 * @param apiKey A Last.fm API key.
 	 * @return a {@link PaginatedResult} of the tracks
 	 */
@@ -212,7 +214,8 @@ public class Library {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("user", user);
 		params.put("page", String.valueOf(page));
-		params.put("limit", String.valueOf(limit));
+		if (limit > 0)
+			params.put("limit", String.valueOf(limit));
 		Result result = Caller.getInstance().call("library.getTracks", apiKey, params);
 		return ResponseBuilder.buildPaginatedResult(result, Track.class);
 	}
