@@ -359,7 +359,7 @@ public class Track extends MusicEntry {
 	 * @return a list of similar <code>Track</code>s
 	 */
 	public static Collection<Track> getSimilar(String artist, String trackOrMbid, String apiKey) {
-		return getSimilar(artist, trackOrMbid, apiKey);
+		return getSimilar(artist, trackOrMbid, apiKey, 100);
 	}
 
 
