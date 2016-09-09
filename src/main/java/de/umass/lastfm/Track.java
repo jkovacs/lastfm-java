@@ -359,12 +359,32 @@ public class Track extends MusicEntry {
 	 * @return a list of similar <code>Track</code>s
 	 */
 	public static Collection<Track> getSimilar(String artist, String trackOrMbid, String apiKey) {
+		return getSimilar(artist, trackOrMbid, apiKey, 100);
+	}
+
+
+	/**
+	 * Get the similar tracks for this track on Last.fm, based on listening data.<br/>
+	 * You have to provide either an artist and a track name <i>or</i> an mbid. Pass <code>null</code>
+	 * for parameters you don't need.
+	 *
+	 * @param artist The artist name in question
+	 * @param trackOrMbid The track name in question or the track's MBID
+	 * @param apiKey A Last.fm API key.
+	 * @param limit number of results to return
+	 * @return a list of similar <code>Track</code>s
+	 */
+	public static Collection<Track> getSimilar(String artist, String trackOrMbid, String apiKey, int limit) {
 		Map<String, String> params = new HashMap<String, String>();
 		if (StringUtilities.isMbid(trackOrMbid)) {
 			params.put("mbid", trackOrMbid);
 		} else {
 			params.put("artist", artist);
 			params.put("track", trackOrMbid);
+		}
+
+		if (limit > 0){
+			params.put("limit", "" + limit);
 		}
 		Result result = Caller.getInstance().call("track.getSimilar", apiKey, params);
 		return ResponseBuilder.buildCollection(result, Track.class);
