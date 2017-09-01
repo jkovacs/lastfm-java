@@ -25,21 +25,14 @@
  */
 package de.umass.lastfm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import de.umass.lastfm.scrobble.IgnoredMessageCode;
 import de.umass.lastfm.scrobble.ScrobbleData;
 import de.umass.lastfm.scrobble.ScrobbleResult;
 import de.umass.util.MapUtilities;
 import de.umass.util.StringUtilities;
 import de.umass.xml.DomElement;
+
+import java.util.*;
 
 /**
  * Bean that contains information related to <code>Track</code>s and provides bindings to methods
@@ -754,5 +747,41 @@ public class Track extends MusicEntry {
 			}
 			return track;
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Track track = (Track) o;
+
+		if (position != track.position) return false;
+		if (fullTrackAvailable != track.fullTrackAvailable) return false;
+		if (nowPlaying != track.nowPlaying) return false;
+		if (duration != track.duration) return false;
+		if (artist != null ? !artist.equals(track.artist) : track.artist != null) return false;
+		if (artistMbid != null ? !artistMbid.equals(track.artistMbid) : track.artistMbid != null) return false;
+		if (album != null ? !album.equals(track.album) : track.album != null) return false;
+		if (albumMbid != null ? !albumMbid.equals(track.albumMbid) : track.albumMbid != null) return false;
+		if (playedWhen != null ? !playedWhen.equals(track.playedWhen) : track.playedWhen != null) return false;
+		if (location != null ? !location.equals(track.location) : track.location != null) return false;
+		return lastFmExtensionInfos != null ? lastFmExtensionInfos.equals(track.lastFmExtensionInfos) : track.lastFmExtensionInfos == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = artist != null ? artist.hashCode() : 0;
+		result = 31 * result + (artistMbid != null ? artistMbid.hashCode() : 0);
+		result = 31 * result + (album != null ? album.hashCode() : 0);
+		result = 31 * result + (albumMbid != null ? albumMbid.hashCode() : 0);
+		result = 31 * result + position;
+		result = 31 * result + (fullTrackAvailable ? 1 : 0);
+		result = 31 * result + (nowPlaying ? 1 : 0);
+		result = 31 * result + (playedWhen != null ? playedWhen.hashCode() : 0);
+		result = 31 * result + duration;
+		result = 31 * result + (location != null ? location.hashCode() : 0);
+		result = 31 * result + (lastFmExtensionInfos != null ? lastFmExtensionInfos.hashCode() : 0);
+		return result;
 	}
 }
