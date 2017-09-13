@@ -9,13 +9,13 @@ It provides classes and methods to invoke Last.fm API methods as well as scrobbl
 <dependency>
     <groupId>de.u-mass</groupId>
     <artifactId>lastfm-java</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3-SNAPSHOT</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-compile 'de.u-mass:lastfm-java:0.1.2'
+compile 'de.u-mass:lastfm-java:0.1.3-SNAPSHOT'
 ```
 
 ### Documentation
