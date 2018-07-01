@@ -195,7 +195,15 @@ public class User extends ImageHolder {
 	}
 
 	public static Collection<Artist> getTopArtists(String user, Period period, String apiKey) {
-		Result result = Caller.getInstance().call("user.getTopArtists", apiKey, "user", user, "period", period.getString());
+		return getTopArtists(user, period, -1, apiKey);
+	}
+
+	public static Collection<Artist> getTopArtists(String user, Period period, int limit, String apiKey) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("user", user);
+		params.put("period", period.toString());
+		MapUtilities.nullSafePut(params, "limit", limit);
+		Result result = Caller.getInstance().call("user.getTopArtists", apiKey, params);
 		return ResponseBuilder.buildCollection(result, Artist.class);
 	}
 
