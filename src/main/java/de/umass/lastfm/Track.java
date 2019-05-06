@@ -708,7 +708,7 @@ public class Track extends MusicEntry {
 	public String toString() {
 		return "Track[name=" + name + ",artist=" + artist + ", album=" + album + ", position=" + position + ", duration=" + duration
 				+ ", location=" + location + ", nowPlaying=" + nowPlaying + ", fullTrackAvailable=" + fullTrackAvailable + ", playedWhen="
-				+ playedWhen + ", artistMbId=" + artistMbid + ", albumMbId" + albumMbid + "]";
+				+ playedWhen + ", artistMbId=" + artistMbid + ", albumMbId=" + albumMbid + "]";
 	}
 
 	private static class TrackFactory implements ItemFactory<Track> {
