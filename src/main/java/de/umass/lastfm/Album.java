@@ -92,7 +92,7 @@ public class Album extends MusicEntry {
 	 * @return Album metadata
 	 */
 	public static Album getInfo(String artist, String albumOrMbid, String apiKey) {
-		return getInfo(artist, albumOrMbid, null, apiKey);
+		return getInfo(artist, albumOrMbid, null, null, null, apiKey);
 	}
 
 	/**
@@ -101,17 +101,25 @@ public class Album extends MusicEntry {
 	 *
 	 * @param artist Artist's name
 	 * @param albumOrMbid Album name or MBID
+	 * @param autoCorrect Transform misspelled artist names into correct artist names, returning the correct version instead. The corrected artist name will be returned in the response.
+	 * @param locale The language to return the biography in, expressed as an ISO 639 alpha-2 code.
 	 * @param username The username for the context of the request. If supplied, the user's playcount for this album is included in the response.
 	 * @param apiKey The API key
 	 * @return Album metadata
 	 */
-	public static Album getInfo(String artist, String albumOrMbid, String username, String apiKey) {
+	public static Album getInfo(String artist, String albumOrMbid, Boolean autoCorrect, Locale locale, String username, String apiKey) {
 		Map<String, String> params = new HashMap<String, String>();
 		if (StringUtilities.isMbid(albumOrMbid)) {
 			params.put("mbid", albumOrMbid);
 		} else {
 			params.put("artist", artist);
 			params.put("album", albumOrMbid);
+		}
+		if (autoCorrect != null) {
+			params.put("autocorrect", autoCorrect ? "1" : "0");
+		}
+		if (locale != null && locale.getLanguage().length() != 0) {
+			params.put("lang", locale.getLanguage());
 		}
 		MapUtilities.nullSafePut(params, "username", username);
 		Result result = Caller.getInstance().call("album.getInfo", apiKey, params);
