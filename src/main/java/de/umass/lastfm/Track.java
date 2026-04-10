@@ -64,7 +64,7 @@ public class Track extends MusicEntry {
 	private String artist;
 	private String artistMbid;
 
-	protected String album;		// protected for use in Playlist.playlistFromElement
+	protected String album;		// protected for subclass use
 	private String albumMbid;
 	private int position = -1;
 
@@ -72,10 +72,10 @@ public class Track extends MusicEntry {
 	private boolean nowPlaying;
 
 	private Date playedWhen;
-	protected int duration;		// protected for use in Playlist.playlistFromElement
-	protected String location;		// protected for use in Playlist.playlistFromElement
+	protected int duration;		// protected for subclass use
+	protected String location;		// protected for subclass use
 
-	protected Map<String, String> lastFmExtensionInfos = new HashMap<String, String>();		// protected for use in Playlist.playlistFromElement
+	protected Map<String, String> lastFmExtensionInfos = new HashMap<String, String>();		// protected for subclass use
 
 
 	protected Track(String name, String url, String artist) {
@@ -94,8 +94,7 @@ public class Track extends MusicEntry {
 
 	/**
 	 * Returns the duration of the song, if available, in seconds. The duration attribute is only available
-	 * for tracks retrieved by {@link Playlist#fetch(String, String) Playlist.fetch} and
-	 * {@link Track#getInfo(String, String, String) Track.getInfo}.
+	 * for tracks retrieved by {@link Track#getInfo(String, String, String) Track.getInfo}.
 	 *
 	 * @return duration in seconds
 	 */
@@ -128,7 +127,7 @@ public class Track extends MusicEntry {
 	}
 
 	/**
-	 * Returns the location (URL) of this Track. This information is only available with the {@link Radio} services.
+	 * Returns the location (URL) of this Track.
 	 *
 	 * @return the location
 	 */
@@ -238,27 +237,6 @@ public class Track extends MusicEntry {
 	}
 
 	/**
-	 * Retrieves the top fans for the given track. You either have to specify a track and artist name or
-	 * a mbid. If you specify an mbid you may pass <code>null</code> for the first parameter.
-	 *
-	 * @param artist Artist name or <code>null</code> if an MBID is specified
-	 * @param trackOrMbid Track name or MBID
-	 * @param apiKey The API key
-	 * @return list of fans
-	 */
-	public static Collection<User> getTopFans(String artist, String trackOrMbid, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(trackOrMbid)) {
-			params.put("mbid", trackOrMbid);
-		} else {
-			params.put("artist", artist);
-			params.put("track", trackOrMbid);
-		}
-		Result result = Caller.getInstance().call("track.getTopFans", apiKey, params);
-		return ResponseBuilder.buildCollection(result, User.class);
-	}
-
-	/**
 	 * Tag an album using a list of user supplied tags.
 	 *
 	 * @param artist The artist name in question
@@ -285,22 +263,6 @@ public class Track extends MusicEntry {
 	}
 
 	/**
-	 * Share a track twith one or more Last.fm users or other friends.
-	 *
-	 * @param artist An artist name.
-	 * @param track A track name.
-	 * @param message A message to send with the recommendation or <code>null</code>. If not supplied a default message will be used.
-	 * @param recipient A comma delimited list of email addresses or Last.fm usernames. Maximum is 10.
-	 * @param session A Session instance
-	 * @return the Result of the operation
-	 */
-	public static Result share(String artist, String track, String message, String recipient, Session session) {
-		Map<String, String> params = StringUtilities.map("artist", artist, "track", track, "recipient", recipient);
-		MapUtilities.nullSafePut(params, "message", message);
-		return Caller.getInstance().call("track.share", session, params);
-	}
-
-	/**
 	 * Love a track for a user profile.
 	 *
 	 * @param artist An artist name
@@ -322,30 +284,6 @@ public class Track extends MusicEntry {
 	 */
 	public static Result unlove(String artist, String track, Session session) {
 		return Caller.getInstance().call("track.unlove", session, "artist", artist, "track", track);
-	}
-
-	/**
-	 * Ban a track for a given user profile.
-	 *
-	 * @param artist An artist name
-	 * @param track A track name
-	 * @param session A Session instance
-	 * @return the Result of the operation
-	 */
-	public static Result ban(String artist, String track, Session session) {
-		return Caller.getInstance().call("track.ban", session, "artist", artist, "track", track);
-	}
-
-	/**
-	 * UnBan a track for a given user profile.
-	 *
-	 * @param artist An artist name
-	 * @param track A track name
-	 * @param session A Session instance
-	 * @return the Result of the operation
-	 */
-	public static Result unban(String artist, String track, Session session) {
-		return Caller.getInstance().call("track.unban", session, "artist", artist, "track", track);
 	}
 
 	/**
@@ -461,40 +399,6 @@ public class Track extends MusicEntry {
 	}
 
 	/**
-	 * Get a list of Buy Links for a particular Track. It is required that you supply either the artist and track params or the mbid param.
-	 *
-	 * @param artist The artist name in question
-	 * @param albumOrMbid Track name or MBID
-	 * @param country A country name, as defined by the ISO 3166-1 country names standard
-	 * @param apiKey A Last.fm API key
-	 * @return a Collection of {@link BuyLink}s
-	 */
-	public static Collection<BuyLink> getBuylinks(String artist, String albumOrMbid, String country, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(albumOrMbid)) {
-			params.put("mbid", albumOrMbid);
-		} else {
-			params.put("artist", artist);
-			params.put("album", albumOrMbid);
-		}
-		params.put("country", country);
-		Result result = Caller.getInstance().call("track.getBuylinks", apiKey, params);
-		if (!result.isSuccessful())
-			return Collections.emptyList();
-		DomElement element = result.getContentElement();
-		DomElement physicals = element.getChild("physicals");
-		DomElement downloads = element.getChild("downloads");
-		Collection<BuyLink> links = new ArrayList<BuyLink>();
-		for (DomElement e : physicals.getChildren("affiliation")) {
-			links.add(BuyLink.linkFromElement(BuyLink.StoreType.PHYSICAl, e));
-		}
-		for (DomElement e : downloads.getChildren("affiliation")) {
-			links.add(BuyLink.linkFromElement(BuyLink.StoreType.DIGITAL, e));
-		}
-		return links;
-	}
-
-	/**
 	 * Use the last.fm corrections data to check whether the supplied track has a correction to a canonical track. This method returns a new
 	 * {@link Track} object containing the corrected data, or <code>null</code> if the supplied Artist/Track combination was not found.
 	 *
@@ -512,55 +416,6 @@ public class Track extends MusicEntry {
 			return new Track(track, null, artist);
 		DomElement trackElem = correctionElement.getChild("track");
 		return FACTORY.createItemFromElement(trackElem);
-	}
-
-	/**
-	 * Get shouts for a track.
-	 *
-	 * @param artist The artist name
-	 * @param trackOrMbid The track name or a mausicbrainz id
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artist, String trackOrMbid, String apiKey) {
-		return getShouts(artist, trackOrMbid, -1, -1, apiKey);
-	}
-
-	/**
-	 * Get shouts for a track.
-	 *
-	 * @param artist The artist name
-	 * @param trackOrMbid The track name or a mausicbrainz id
-	 * @param page The page number to fetch
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artist, String trackOrMbid, int page, String apiKey) {
-		return getShouts(artist, trackOrMbid, page, -1, apiKey);
-	}
-
-	/**
-	 * Get shouts for a track.
-	 *
-	 * @param artist The artist name
-	 * @param trackOrMbid The track name or a mausicbrainz id
-	 * @param page The page number to fetch
-	 * @param limit An integer used to limit the number of shouts returned per page or -1 for default
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artist, String trackOrMbid, int page, int limit, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(trackOrMbid)) {
-			params.put("mbid", trackOrMbid);
-		} else {
-			params.put("artist", artist);
-			params.put("track", trackOrMbid);
-		}
-		MapUtilities.nullSafePut(params, "limit", limit);
-		MapUtilities.nullSafePut(params, "page", page);
-		Result result = Caller.getInstance().call("track.getShouts", apiKey, params);
-		return ResponseBuilder.buildPaginatedResult(result, Shout.class);
 	}
 
 	/**
@@ -723,7 +578,7 @@ public class Track extends MusicEntry {
 				if(duration.length() != 0) {
 					int durationLength = Integer.parseInt(duration);
 					// So it seems last.fm couldn't decide which format to send the duration in.
-					// It's supplied in milliseconds for Playlist.fetch and Track.getInfo but Artist.getTopTracks returns (much saner) seconds
+					// It's supplied in milliseconds for Track.getInfo but Artist.getTopTracks returns (much saner) seconds
 					// so we're doing a little sanity check for the duration to be over or under 10'000 and decide what to do
 					track.duration = durationLength > 10000 ? durationLength / 1000 : durationLength;
 				}

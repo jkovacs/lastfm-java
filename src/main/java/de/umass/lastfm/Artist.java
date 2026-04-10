@@ -175,18 +175,6 @@ public class Artist extends MusicEntry {
 	}
 
 	/**
-	 * Retrieves a list of the top fans of the given artist.
-	 *
-	 * @param artist Artist's name
-	 * @param apiKey The API key
-	 * @return list of top fans
-	 */
-	public static Collection<User> getTopFans(String artist, String apiKey) {
-		Result result = Caller.getInstance().call("artist.getTopFans", apiKey, "artist", artist);
-		return ResponseBuilder.buildCollection(result, User.class);
-	}
-
-	/**
 	 * Retrieves the top tags for the given artist.
 	 *
 	 * @param artist Artist's name
@@ -235,19 +223,6 @@ public class Artist extends MusicEntry {
 	}
 
 	/**
-	 * Share an artist with one or more Last.fm users or other friends.
-	 *
-	 * @param artist The artist to share.
-	 * @param recipients A comma delimited list of email addresses or Last.fm usernames. Maximum is 10.
-	 * @param message An optional message to send with the recommendation.
-	 * @param session A Session instance
-	 * @return the Result of the operation
-	 */
-	public static Result share(String artist, String recipients, String message, Session session) {
-		return Caller.getInstance().call("artist.share", session, "artist", artist, "recipient", recipients, "message", message);
-	}
-
-	/**
 	 * Get the tags applied by an individual user to an artist on Last.fm.
 	 *
 	 * @param artist The artist name in question
@@ -267,123 +242,6 @@ public class Artist extends MusicEntry {
 	}
 
 	/**
-	 * Returns a list of upcoming events for an artist.
-	 *
-	 * @param artistOrMbid The artist name in question
-	 * @param apiKey A Last.fm API key
-	 * @return a list of events
-	 */
-	public static PaginatedResult<Event> getEvents(String artistOrMbid, String apiKey) {
-		return getEvents(artistOrMbid, false, -1, -1, apiKey);
-	}
-	
-	/**
-	 * Returns a list of upcoming events for an artist.
-	 *
-	 * @param artistOrMbid The artist name in question
-	 * @param festivalsOnly Whether only festivals should be returned, or all events
-	 * @param page The page number to fetch
-	 * @param limit The number of results to fetch per page
-	 * @param apiKey A Last.fm API key
-	 * @return a list of events
-	 */
-	public static PaginatedResult<Event> getEvents(String artistOrMbid, boolean festivalsOnly, int page, int limit, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(artistOrMbid)) {
-			params.put("mbid", artistOrMbid);
-		} else {
-			params.put("artist", artistOrMbid);
-		}
-		MapUtilities.nullSafePut(params, "page", page);
-		MapUtilities.nullSafePut(params, "limit", limit);
-		if(festivalsOnly)
-			params.put("festivalsonly", "1");
-		Result result = Caller.getInstance().call("artist.getEvents", apiKey, params);
-		return ResponseBuilder.buildPaginatedResult(result, Event.class);
-	}
-
-	/**
-	 * Get a paginated list of all the events this artist has played at in the past.
-	 *
-	 * @param artistOrMbid The name of the artist you would like to fetch event listings for
-	 * @param apiKey A Last.fm API key
-	 * @return a list of past events
-	 */
-	public static PaginatedResult<Event> getPastEvents(String artistOrMbid, String apiKey) {
-		return getPastEvents(artistOrMbid, false, -1, -1, apiKey);
-	}
-	
-	/**
-	 * Get a paginated list of all the events this artist has played at in the past.
-	 *
-	 * @param artistOrMbid The name of the artist you would like to fetch event listings for
-	 * @param festivalsOnly Whether only festivals should be returned, or all events
-	 * @param page The page of results to return
-	 * @param limit The maximum number of results to return per page
-	 * @param apiKey A Last.fm API key
-	 * @return a list of past events
-	 */
-	public static PaginatedResult<Event> getPastEvents(String artistOrMbid, boolean festivalsOnly, int page, int limit, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(artistOrMbid)) {
-			params.put("mbid", artistOrMbid);
-		} else {
-			params.put("artist", artistOrMbid);
-		}
-		MapUtilities.nullSafePut(params, "page", page);
-		MapUtilities.nullSafePut(params, "limit", limit);
-		if(festivalsOnly)
-			params.put("festivalsonly", "1");
-		Result result = Caller.getInstance().call("artist.getPastEvents", apiKey, params);
-		return ResponseBuilder.buildPaginatedResult(result, Event.class);
-	}
-
-	/**
-	 * Get {@link Image}s for this artist in a variety of sizes.
-	 *
-	 * @param artistOrMbid The artist name in question
-	 * @param apiKey A Last.fm API key
-	 * @return a list of {@link Image}s
-	 */
-	public static PaginatedResult<Image> getImages(String artistOrMbid, String apiKey) {
-		return getImages(artistOrMbid, -1, -1, apiKey);
-	}
-
-	/**
-	 * Get {@link Image}s for this artist in a variety of sizes.
-	 *
-	 * @param artistOrMbid The artist name in question
-	 * @param page Which page of limit amount to display
-	 * @param limit How many to return. Defaults and maxes out at 50
-	 * @param apiKey A Last.fm API key
-	 * @return a list of {@link Image}s
-	 */
-	public static PaginatedResult<Image> getImages(String artistOrMbid, int page, int limit, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(artistOrMbid)) {
-			params.put("mbid", artistOrMbid);
-		} else {
-			params.put("artist", artistOrMbid);
-		}
-		MapUtilities.nullSafePut(params, "page", page);
-		MapUtilities.nullSafePut(params, "limit", limit);
-		Result result = Caller.getInstance().call("artist.getImages", apiKey, params);
-		return ResponseBuilder.buildPaginatedResult(result, Image.class);
-	}
-
-	/**
-	 * Shout on this artist's shoutbox
-	 *
-	 * @param artist The name of the artist to shout on
-	 * @param message The message to post to the shoutbox
-	 * @param session A Session instance
-	 * @return the result of the operation
-	 */
-	public static Result shout(String artist, String message, Session session) {
-		return Caller.getInstance().call("artist.shout", session, "artist", artist, "message", message);
-	}
-
-	/**
 	 * Use the last.fm corrections data to check whether the supplied artist has a correction to a canonical artist. This method returns a new
 	 * {@link Artist} object containing the corrected data, or <code>null</code> if the supplied Artist was not found.
 	 *
@@ -400,51 +258,6 @@ public class Artist extends MusicEntry {
 			return new Artist(artist, null);
 		DomElement artistElem = correctionElement.getChild("artist");
 		return FACTORY.createItemFromElement(artistElem);
-	}
-
-	/**
-	 * Get shouts for an artist.
-	 *
-	 * @param artistOrMbid The artist name or a musicbrainz id
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artistOrMbid, String apiKey) {
-		return getShouts(artistOrMbid, -1, -1, apiKey);
-	}
-
-	/**
-	 * Get shouts for an artist.
-	 *
-	 * @param artistOrMbid The artist name or a musicbrainz id
-	 * @param page The page number to fetch
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artistOrMbid, int page, String apiKey) {
-		return getShouts(artistOrMbid, page, -1, apiKey);
-	}
-
-	/**
-	 * Get shouts for an artist.
-	 *
-	 * @param artistOrMbid The artist name or a musicbrainz id
-	 * @param page The page number to fetch
-	 * @param limit An integer used to limit the number of shouts returned per page or -1 for default
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artistOrMbid, int page, int limit, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(artistOrMbid)) {
-			params.put("mbid", artistOrMbid);
-		} else {
-			params.put("artist", artistOrMbid);
-		}
-		MapUtilities.nullSafePut(params, "limit", limit);
-		MapUtilities.nullSafePut(params, "page", page);
-		Result result = Caller.getInstance().call("artist.getShouts", apiKey, params);
-		return ResponseBuilder.buildPaginatedResult(result, Shout.class);
 	}
 
 	private static class ArtistFactory implements ItemFactory<Artist> {

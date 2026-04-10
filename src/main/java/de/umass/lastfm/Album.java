@@ -46,7 +46,7 @@ public class Album extends MusicEntry {
 
 	private static final DateFormat RELEASE_DATE_FORMAT = new SimpleDateFormat("d MMM yyyy, HH:mm", Locale.ENGLISH);
 	private static final DateFormat RELEASE_DATE_FORMAT_2 = new SimpleDateFormat("E, d MMM yyyy HH:mm:ss Z",
-			Locale.ENGLISH); /* only used in User.getNewReleases() */
+			Locale.ENGLISH);
 	
 	private String artist;
 	private Date releaseDate;
@@ -84,7 +84,6 @@ public class Album extends MusicEntry {
 
 	/**
 	 * Get the metadata for an album on Last.fm using the album name or a musicbrainz id.
-	 * See playlist.fetch on how to get the album playlist.
 	 *
 	 * @param artist Artist's name
 	 * @param albumOrMbid Album name or MBID
@@ -97,7 +96,6 @@ public class Album extends MusicEntry {
 
 	/**
 	 * Get the metadata for an album on Last.fm using the album name or a musicbrainz id.
-	 * See playlist.fetch on how to get the album playlist.
 	 *
 	 * @param artist Artist's name
 	 * @param albumOrMbid Album name or MBID
@@ -158,12 +156,23 @@ public class Album extends MusicEntry {
 	 * Get the tags applied by an individual user to an album on Last.fm.
 	 *
 	 * @param artist The artist name in question
-	 * @param album The album name in question
+	 * @param albumOrMbid Album name or MBID in question
+	 * @param autoCorrect Transform misspelled artist names into correct artist names, returning the correct version instead. The corrected artist name will be returned in the response.
 	 * @param session A Session instance
 	 * @return a list of tags
 	 */
-	public static Collection<String> getTags(String artist, String album, Session session) {
-		Result result = Caller.getInstance().call("album.getTags", session, "artist", artist, "album", album);
+	public static Collection<String> getTags(String artist, String albumOrMbid, Boolean autoCorrect, Session session) {
+		Map<String, String> params = new HashMap<>();
+		if (StringUtilities.isMbid(albumOrMbid)) {
+			params.put("mbid", albumOrMbid);
+		} else {
+			params.put("artist", artist);
+			params.put("album", albumOrMbid);
+		}
+		if (autoCorrect != null) {
+			params.put("autocorrect", autoCorrect ? "1" : "0");
+		}
+		Result result = Caller.getInstance().call("album.getTags", session, params);
 		if (!result.isSuccessful())
 			return Collections.emptyList();
 		DomElement element = result.getContentElement();
@@ -193,40 +202,6 @@ public class Album extends MusicEntry {
 	}
 
 	/**
-	 * Get a list of Buy Links for a particular Album. It is required that you supply either the artist and track params or the mbid param.
-	 *
-	 * @param artist The artist name in question
-	 * @param albumOrMbid Album name or MBID
-	 * @param country A country name, as defined by the ISO 3166-1 country names standard
-	 * @param apiKey A Last.fm API key
-	 * @return a Collection of {@link BuyLink}s
-	 */
-	public static Collection<BuyLink> getBuylinks(String artist, String albumOrMbid, String country, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(albumOrMbid)) {
-			params.put("mbid", albumOrMbid);
-		} else {
-			params.put("artist", artist);
-			params.put("album", albumOrMbid);
-		}
-		params.put("country", country);
-		Result result = Caller.getInstance().call("album.getBuylinks", apiKey, params);
-		if (!result.isSuccessful())
-			return Collections.emptyList();
-		DomElement element = result.getContentElement();
-		DomElement physicals = element.getChild("physicals");
-		DomElement downloads = element.getChild("downloads");
-		Collection<BuyLink> links = new ArrayList<BuyLink>();
-		for (DomElement e : physicals.getChildren("affiliation")) {
-			links.add(BuyLink.linkFromElement(BuyLink.StoreType.PHYSICAl, e));
-		}
-		for (DomElement e : downloads.getChildren("affiliation")) {
-			links.add(BuyLink.linkFromElement(BuyLink.StoreType.DIGITAL, e));
-		}
-		return links;
-	}
-
-	/**
 	 * Get the top tags for an album on Last.fm, ordered by popularity. You either have to specify an album and artist name or
 	 * an mbid. If you specify an mbid you may pass <code>null</code> for the first parameter.
 	 *
@@ -245,55 +220,6 @@ public class Album extends MusicEntry {
 		}
 		Result result = Caller.getInstance().call("album.getTopTags", apiKey, params);
 		return ResponseBuilder.buildCollection(result, Tag.class);
-	}
-
-	/**
-	 * Get shouts for an album.
-	 *
-	 * @param artist The artist name
-	 * @param albumOrMbid The album name or a mausicbrainz id
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artist, String albumOrMbid, String apiKey) {
-		return getShouts(artist, albumOrMbid, -1, -1, apiKey);
-	}
-
-	/**
-	 * Get shouts for an album.
-	 *
-	 * @param artist The artist name
-	 * @param albumOrMbid The album name or a mausicbrainz id
-	 * @param page The page number to fetch
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artist, String albumOrMbid, int page, String apiKey) {
-		return getShouts(artist, albumOrMbid, page, -1, apiKey);
-	}
-
-	/**
-	 * Get shouts for an album.
-	 *
-	 * @param artist The artist name
-	 * @param albumOrMbid The album name or a mausicbrainz id
-	 * @param page The page number to fetch
-	 * @param limit An integer used to limit the number of shouts returned per page or -1 for default
-	 * @param apiKey A Last.fm API key.
-	 * @return a page of <code>Shout</code>s
-	 */
-	public static PaginatedResult<Shout> getShouts(String artist, String albumOrMbid, int page, int limit, String apiKey) {
-		Map<String, String> params = new HashMap<String, String>();
-		if (StringUtilities.isMbid(albumOrMbid)) {
-			params.put("mbid", albumOrMbid);
-		} else {
-			params.put("artist", artist);
-			params.put("album", albumOrMbid);
-		}
-		MapUtilities.nullSafePut(params, "limit", limit);
-		MapUtilities.nullSafePut(params, "page", page);
-		Result result = Caller.getInstance().call("album.getShouts", apiKey, params);
-		return ResponseBuilder.buildPaginatedResult(result, Shout.class);
 	}
 
 	private static class AlbumFactory implements ItemFactory<Album> {

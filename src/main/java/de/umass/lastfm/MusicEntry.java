@@ -57,8 +57,7 @@ public abstract class MusicEntry extends ImageHolder {
 	protected String id;
 
 	/**
-	 * This property is only available on hype charts, like {@link Chart#getHypedArtists(String)} or {@link
-	 * de.umass.lastfm.Group#getHype(String, String)}
+	 * This property is only available on hype charts.
 	 */
 	protected int percentageChange;
 
@@ -119,8 +118,7 @@ public abstract class MusicEntry extends ImageHolder {
 	}
 
 	/**
-	 * Returns the value of the "percentage change" fields in weekly hype charts responses, such as in {@link Group#getHype(String, String)}
-	 * or {@link Chart#getHypedArtists(String)}.
+	 * Returns the value of the "percentage change" fields in weekly hype charts responses.
 	 *
 	 * @return Weekly percentage change
 	 */

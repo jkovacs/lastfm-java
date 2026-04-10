@@ -172,32 +172,6 @@ public class Tag implements Comparable<Tag> {
 		return ResponseBuilder.buildCollection(result, Artist.class);
 	}
 
-	public static Collection<Tag> search(String tag, String apiKey) {
-		return search(tag, 30, apiKey);
-	}
-
-	public static Collection<Tag> search(String tag, int limit, String apiKey) {
-		Result result = Caller.getInstance().call("tag.search", apiKey, "tag", tag, "limit", String.valueOf(limit));
-		Collection<DomElement> children = result.getContentElement().getChild("tagmatches").getChildren("tag");
-		List<Tag> tags = new ArrayList<Tag>(children.size());
-		for (DomElement s : children) {
-			tags.add(FACTORY.createItemFromElement(s));
-		}
-		return tags;
-	}
-
-	public static Chart<Artist> getWeeklyArtistChart(String tag, String apiKey) {
-		return getWeeklyArtistChart(tag, null, null, -1, apiKey);
-	}
-
-	public static Chart<Artist> getWeeklyArtistChart(String tag, int limit, String apiKey) {
-		return getWeeklyArtistChart(tag, null, null, limit, apiKey);
-	}
-
-	public static Chart<Artist> getWeeklyArtistChart(String tag, String from, String to, int limit, String apiKey) {
-		return Chart.getChart("tag.getWeeklyArtistChart", "tag", tag, "artist", from, to, limit, apiKey);
-	}
-
 	public static LinkedHashMap<String, String> getWeeklyChartList(String tag, String apiKey) {
 		return Chart.getWeeklyChartList("tag.getWeeklyChartList", "tag", tag, apiKey);
 	}
