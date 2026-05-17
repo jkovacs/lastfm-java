@@ -49,11 +49,11 @@ public class User extends ImageHolder {
 
 	private String language;
 	private String country;
-	private int age = -1;
+	private long age = -1;
 	private String gender;
 	private boolean subscriber;
-	private int numPlaylists;
-	private int playcount;
+	private long numPlaylists;
+	private long playcount;
 	private Date registeredDate;
 
 	private User(String name, String url) {
@@ -73,7 +73,7 @@ public class User extends ImageHolder {
 		return url;
 	}
 
-	public int getAge() {
+	public long getAge() {
 		return age;
 	}
 
@@ -89,11 +89,11 @@ public class User extends ImageHolder {
 		return language;
 	}
 
-	public int getNumPlaylists() {
+	public long getNumPlaylists() {
 		return numPlaylists;
 	}
 
-	public int getPlaycount() {
+	public long getPlaycount() {
 		return playcount;
 	}
 
@@ -344,7 +344,7 @@ public class User extends ImageHolder {
 			user.country = element.getChildText("country");
 			if (element.hasChild("age")) {
 				try {
-					user.age = Integer.parseInt(element.getChildText("age"));
+					user.age = Long.parseLong(element.getChildText("age"));
 				} catch (NumberFormatException e) {
 					// no age
 				}
@@ -353,14 +353,14 @@ public class User extends ImageHolder {
 			user.subscriber = "1".equals(element.getChildText("subscriber"));
 			if (element.hasChild("playcount")) { // extended user information
 				try {
-					user.playcount = Integer.parseInt(element.getChildText("playcount"));
+					user.playcount = Long.parseLong(element.getChildText("playcount"));
 				} catch (NumberFormatException e) {
 					// no playcount
 				}
 			}
 			if (element.hasChild("playlists")) { // extended user information
 				try {
-					user.numPlaylists = Integer.parseInt(element.getChildText("playlists"));
+					user.numPlaylists = Long.parseLong(element.getChildText("playlists"));
 				} catch (NumberFormatException e) {
 					// no playlists
 				}

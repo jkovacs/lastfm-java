@@ -327,7 +327,7 @@ public class Caller {
 		Status status = "ok".equals(statusString) ? Status.OK : Status.FAILED;
 		if (status == Status.FAILED) {
 			Element errorElement = (Element) root.getElementsByTagName("error").item(0);
-			int errorCode = Integer.parseInt(errorElement.getAttribute("code"));
+			int errorCode = (int) Long.parseLong(errorElement.getAttribute("code"));
 			String message = errorElement.getTextContent();
 			return Result.createRestErrorResult(errorCode, message);
 		} else {

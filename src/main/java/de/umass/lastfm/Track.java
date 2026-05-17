@@ -66,13 +66,13 @@ public class Track extends MusicEntry {
 
 	protected String album;		// protected for subclass use
 	private String albumMbid;
-	private int position = -1;
+	private long position = -1;
 
 	private boolean fullTrackAvailable;
 	private boolean nowPlaying;
 
 	private Date playedWhen;
-	protected int duration;		// protected for subclass use
+	protected long duration;		// protected for subclass use
 	protected String location;		// protected for subclass use
 
 	protected Map<String, String> lastFmExtensionInfos = new HashMap<String, String>();		// protected for subclass use
@@ -98,7 +98,7 @@ public class Track extends MusicEntry {
 	 *
 	 * @return duration in seconds
 	 */
-	public int getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
@@ -174,7 +174,7 @@ public class Track extends MusicEntry {
 	 *
 	 * @return the album position
 	 */
-	public int getPosition() {
+	public long getPosition() {
 		return position;
 	}
 
@@ -389,7 +389,7 @@ public class Track extends MusicEntry {
 		if (album != null) {
 			String pos = album.getAttribute("position");
 			if ((pos != null) && pos.length() != 0) {
-				track.position = Integer.parseInt(pos);
+				track.position = Long.parseLong(pos);
 			}
 			track.album = album.getChildText("title");
 			track.albumMbid = album.getChildText("mbid");
@@ -478,11 +478,11 @@ public class Track extends MusicEntry {
 		String timeString = scrobbleElement.getChildText("timestamp");
 		if (timeString != null) {
 			// will be non-null for scrobble results only
-			scrobbleResult.setTimestamp(Integer.parseInt(timeString));
+			scrobbleResult.setTimestamp(Long.parseLong(timeString));
 		}
 
 		DomElement ignoredMessageElement = scrobbleElement.getChild("ignoredMessage");
-		int ignoredMessageCode = Integer.parseInt(ignoredMessageElement.getAttribute("code"));
+		int ignoredMessageCode = (int) Long.parseLong(ignoredMessageElement.getAttribute("code"));
 		if (ignoredMessageCode > 0) {
 			scrobbleResult.setIgnored(true);
 			scrobbleResult.setIgnoredMessageCode(IgnoredMessageCode.valueOfCode(ignoredMessageCode));
@@ -576,7 +576,7 @@ public class Track extends MusicEntry {
 			if (element.hasChild("duration")) {
 				String duration = element.getChildText("duration");
 				if(duration.length() != 0) {
-					int durationLength = Integer.parseInt(duration);
+					long durationLength = Long.parseLong(duration);
 					// So it seems last.fm couldn't decide which format to send the duration in.
 					// It's supplied in milliseconds for Track.getInfo but Artist.getTopTracks returns (much saner) seconds
 					// so we're doing a little sanity check for the duration to be over or under 10'000 and decide what to do
@@ -604,8 +604,8 @@ public class Track extends MusicEntry {
 			}
 			DomElement stream = element.getChild("streamable");
 			if (stream != null) {
-				String s = stream.getAttribute("fulltrack");
-				track.fullTrackAvailable = s != null && Integer.parseInt(s) == 1;
+							String s = stream.getAttribute("fulltrack");
+							track.fullTrackAvailable = s != null && Long.parseLong(s) == 1L;
 			}
 			return track;
 		}

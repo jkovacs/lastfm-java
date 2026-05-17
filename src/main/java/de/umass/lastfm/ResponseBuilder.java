@@ -96,8 +96,8 @@ public final class ResponseBuilder {
 		if (totalPagesAttribute == null)
 			totalPagesAttribute = contentElement.getAttribute("totalpages");
 
-		int page = Integer.parseInt(contentElement.getAttribute("page"));
-		int totalPages = Integer.parseInt(totalPagesAttribute);
+		int page = (int) Long.parseLong(contentElement.getAttribute("page"));
+		int totalPages = (int) Long.parseLong(totalPagesAttribute);
 
 		return new PaginatedResult<T>(page, totalPages, items);
 	}
