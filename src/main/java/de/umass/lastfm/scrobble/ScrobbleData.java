@@ -47,12 +47,12 @@ public class ScrobbleData {
 	 * The time the track started playing, in UNIX timestamp format (integer number of seconds since 00:00:00, January 1st 1970 UTC). This must
 	 * be in the UTC time zone. Required for scrobbling only.
 	 */
-	private int timestamp = -1;
+	private long timestamp = -1;
 
 	/**
 	 * The length of the track in seconds. Optional.
 	 */
-	private int duration = -1;
+	private long duration = -1;
 
 	/**
 	 * The album name. Optional.
@@ -72,7 +72,7 @@ public class ScrobbleData {
 	/**
 	 * The position of the track on the album. Optional.
 	 */
-	private int trackNumber = -1;
+	private long trackNumber = -1;
 
 	/**
 	 * The stream id for this track if received from the radio.getPlaylist service. Optional.
@@ -88,14 +88,14 @@ public class ScrobbleData {
 	public ScrobbleData() {
 	}
 
-	public ScrobbleData(String artist, String track, int timestamp) {
+	public ScrobbleData(String artist, String track, long timestamp) {
 		this.artist = artist;
 		this.track = track;
 		this.timestamp = timestamp;
 	}
 
-	public ScrobbleData(String artist, String track, int timestamp, int duration, String album, String albumArtist, String musicBrainzId,
-						int trackNumber, String streamId) {
+	public ScrobbleData(String artist, String track, long timestamp, long duration, String album, String albumArtist, String musicBrainzId,
+						long trackNumber, String streamId) {
 		this.artist = artist;
 		this.track = track;
 		this.timestamp = timestamp;
@@ -107,8 +107,8 @@ public class ScrobbleData {
 		this.streamId = streamId;
 	}
 
-	public ScrobbleData(String artist, String track, int timestamp, int duration, String album, String albumArtist, String musicBrainzId,
-			int trackNumber, String streamId, boolean chosenByUser) {
+	public ScrobbleData(String artist, String track, long timestamp, long duration, String album, String albumArtist, String musicBrainzId,
+			long trackNumber, String streamId, boolean chosenByUser) {
 		this.artist = artist;
 		this.track = track;
 		this.timestamp = timestamp;
@@ -137,19 +137,19 @@ public class ScrobbleData {
 		this.track = track;
 	}
 
-	public int getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(int timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 
-	public int getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(int duration) {
+	public void setDuration(long duration) {
 		this.duration = duration;
 	}
 
@@ -177,11 +177,11 @@ public class ScrobbleData {
 		this.musicBrainzId = musicBrainzId;
 	}
 
-	public int getTrackNumber() {
+	public long getTrackNumber() {
 		return trackNumber;
 	}
 
-	public void setTrackNumber(int trackNumber) {
+	public void setTrackNumber(long trackNumber) {
 		this.trackNumber = trackNumber;
 	}
 

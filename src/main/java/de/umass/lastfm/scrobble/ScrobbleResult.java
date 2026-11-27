@@ -38,7 +38,7 @@ public class ScrobbleResult extends Result {
 	private String artist;
 	private String album;
 	private String albumArtist;
-	private int timestamp;
+	private long timestamp;
 	private boolean trackCorrected;
 	private boolean artistCorrected;
 	private boolean albumCorrected;
@@ -91,7 +91,7 @@ public class ScrobbleResult extends Result {
 		return timestamp;
 	}
 
-	public void setTimestamp(int timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 
